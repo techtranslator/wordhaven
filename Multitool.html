@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Multi-Tool Web App</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #f4f4f4;
+    }
+
+    header {
+      background: #333;
+      color: white;
+      padding: 20px;
+      text-align: center;
+    }
+
+    nav {
+      margin-top: 10px;
+    }
+
+    nav button {
+      margin: 5px;
+      padding: 10px 15px;
+      font-size: 16px;
+      cursor: pointer;
+      background: #555;
+      color: white;
+      border: none;
+      border-radius: 4px;
+    }
+
+    nav button:hover {
+      background: #777;
+    }
+
+    .tool-section {
+      display: none;
+      padding: 20px;
+    }
+
+    .tool-section h2 {
+      margin-top: 0;
+    }
+
+    input, textarea, button {
+      margin-top: 10px;
+      font-size: 16px;
+      padding: 10px;
+    }
+
+    textarea {
+      width: 100%;
+      max-width: 500px;
+    }
+
+    #calcDisplay {
+      width: 100%;
+      max-width: 220px;
+      font-size: 1.5em;
+      margin-bottom: 10px;
+      padding: 5px;
+    }
+
+    .calc-buttons {
+      display: grid;
+      grid-template-columns: repeat(4, 60px);
+      gap: 10px;
+      max-width: 260px;
+    }
+
+    .calc-buttons button {
+      padding: 10px;
+      font-size: 18px;
+    }
+
+    ul#todoList {
+      list-style: none;
+      padding: 0;
+    }
+
+    ul#todoList li {
+      background: #ddd;
+      margin: 5px 0;
+      padding: 10px;
+      cursor: pointer;
+      border-radius: 4px;
+    }
+
+    ul#todoList li:hover {
+      background: #ccc;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    @media (max-width: 600px) {
+      .calc-buttons {
+        grid-template-columns: repeat(4, 50px);
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Multi-Tool Web App</h1>
+    <nav>
+      <button onclick="showTool('calculator')">Calculator</button>
+      <button onclick="showTool('textConverter')">Text Converter</button>
+      <button onclick="showTool('todo')">To-Do List</button>
+      <button onclick="showTool('unitConverter')">Unit Converter</button>
+    </nav>
+  </header>
+
+  <main>
+    <!-- Calculator Tool -->
+    <section id="calculator" class="tool-section">
+      <h2>Calculator</h2>
+      <input type="text" id="calcDisplay" readonly />
+      <div class="calc-buttons">
+        <button onclick="appendCalc('1')">1</button>
+        <button onclick="appendCalc('2')">2</button>
+        <button onclick="appendCalc('3')">3</button>
+        <button onclick="appendCalc('+')">+</button>
+        <button onclick="appendCalc('4')">4</button>
+        <button onclick="appendCalc('5')">5</button>
+        <button onclick="appendCalc('6')">6</button>
+        <button onclick="appendCalc('-')">-</button>
+        <button onclick="appendCalc('7')">7</button>
+        <button onclick="appendCalc('8')">8</button>
+        <button onclick="appendCalc('9')">9</button>
+        <button onclick="appendCalc('*')">*</button>
+        <button onclick="appendCalc('0')">0</button>
+        <button onclick="clearCalc()">C</button>
+        <button onclick="calculateResult()">=</button>
+        <button onclick="appendCalc('/')">/</button>
+      </div>
+    </section>
+
+    <!-- Text Converter Tool -->
+    <section id="textConverter" class="tool-section hidden">
+      <h2>Text Converter</h2>
+      <textarea id="textInput" rows="5" placeholder="Enter your text here..."></textarea>
+      <br />
+      <button onclick="convertText('upper')">To Uppercase</button>
+      <button onclick="convertText('lower')">To Lowercase</button>
+      <p>Converted Output:</p>
+      <div id="textOutput" style="background:#eee;padding:10px;border-radius:5px;"></div>
+    </section>
+
+    <!-- To-Do List Tool -->
+    <section id="todo" class="tool-section hidden">
+      <h2>To-Do List</h2>
+      <input type="text" id="todoInput" placeholder="Add a task" />
+      <button onclick="addTodo()">Add</button>
+      <ul id="todoList"></ul>
+    </section>
+
+    <!-- Unit Converter Tool -->
+    <section id="unitConverter" class="tool-section hidden">
+      <h2>Unit Converter (Kilometers to Miles)</h2>
+      <input type="number" id="kmInput" placeholder="Enter kilometers" />
+      <button onclick="convertKmToMiles()">Convert</button>
+      <p id="mileOutput"></p>
+    </section>
+  </main>
+
+  <script>
+    // Show selected tool
+    function showTool(toolId) {
+      const tools = document.querySelectorAll('.tool-section');
+      tools.forEach(tool => tool.classList.add('hidden'));
+      document.getElementById(toolId).classList.remove('hidden');
+    }
+
+    // === Calculator Functions ===
+    function appendCalc(value) {
+      document.getElementById('calcDisplay').value += value;
+    }
+
+    function clearCalc() {
+      document.getElementById('calcDisplay').value = '';
+    }
+
+    function calculateResult() {
+      try {
+        const result = eval(document.getElementById('calcDisplay').value);
+        document.getElementById('calcDisplay').value = result;
+      } catch (e) {
+        alert('Invalid Expression');
+      }
+    }
+
+    // === Text Converter Functions ===
+    function convertText(type) {
+      const input = document.getElementById('textInput').value;
+      const output = type === 'upper' ? input.toUpperCase() : input.toLowerCase();
+      document.getElementById('textOutput').innerText = output;
+    }
+
+    // === To-Do List Functions ===
+    function addTodo() {
+      const input = document.getElementById('todoInput');
+      const task = input.value.trim();
+      if (task === '') return;
+
+      const li = document.createElement('li');
+      li.innerText = task;
+      li.onclick = () => li.remove(); // click to remove
+      document.getElementById('todoList').appendChild(li);
+      input.value = '';
+    }
+
+    // === Unit Converter ===
+    function convertKmToMiles() {
+      const km = parseFloat(document.getElementById('kmInput').value);
+      if (isNaN(km)) {
+        alert("Please enter a valid number");
+        return;
+      }
+      const miles = (km * 0.621371).toFixed(2);
+      document.getElementById('mileOutput').innerText = `${km} km = ${miles} miles`;
+    }
+
+    // Show default tool
+    showTool('calculator');
+  </script>
+
+</body>
+</html>
